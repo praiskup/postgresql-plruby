@@ -18,7 +18,7 @@ execute_test ()
     cd "$1"
     dropdb "$DBNAME"
     createdb "$DBNAME"
-    "${RUBY-ruby}" b.rb "$SUFFIX"
+    "${RUBY-ruby}" ../fixup-test-dir.rb "$SUFFIX"
     psql -q -n -X "$DBNAME" < test_mklang.sql
     test -f test_setup.sql && psql -q -n -X $DBNAME < test_setup.sql
     psql -q -n -X -e "$DBNAME" < test_queries.sql > test.out 2>&1

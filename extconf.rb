@@ -247,6 +247,9 @@ regexp = %r{\Atest/conv_(.*)}
 
 make.puts "\t(cd test ; RUBY='#{RbConfig.ruby}' sh ./testsuite #{suffix})"
 
+make.puts "installcheck:"
+make.puts "\t(cd test ; RUBY='#{RbConfig.ruby}' PLRUBYDIR='#{$vendorarchdir}' sh ./testsuite #{suffix})"
+
 make.close
 
 create_lang(suffix, safe)

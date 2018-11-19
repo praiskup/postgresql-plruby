@@ -8,7 +8,7 @@ script:
     - ruby extconf.rb --vendor --with-safe-level=1
     - make
     - sudo make install
-    - make test
+    - make installcheck
 
 matrix:
   include:
