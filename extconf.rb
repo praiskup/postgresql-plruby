@@ -206,6 +206,11 @@ begin
    end
    $objs = ["plruby.o", "plplan.o", "plpl.o", "pltrans.o"] unless $objs
    create_makefile("plruby#{suffix}")
+
+   make = open("Makefile", "a+")
+   make.puts "installcheck:"
+   make.puts "\tPLRUBYDIR='$(RUBYARCHDIR)' RUBY='#{RbConfig.ruby}' sh ../test/testsuite #{suffix}"
+
 ensure
    Dir.chdir("..")
 end
@@ -244,12 +249,11 @@ ri-site:
 test: src/$(DLLIB)
 EOF
 regexp = %r{\Atest/conv_(.*)}
-Dir["test/*"].each do |dir|
-   if regexp =~ dir
-      next unless subdirs.include?("src/conversions/#{$1}")
-   end
-   make.puts "\t-(cd #{dir} ; RUBY='#{RbConfig.ruby}' sh ./runtest #{suffix})"
-end
+
+make.puts "\t(cd test ; RUBY='#{RbConfig.ruby}' sh ./testsuite #{suffix})"
+
+make.puts "installcheck:"
+make.puts "\t$(MAKE) -C src installcheck"
 
 make.close
 
