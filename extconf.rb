@@ -244,12 +244,8 @@ ri-site:
 test: src/$(DLLIB)
 EOF
 regexp = %r{\Atest/conv_(.*)}
-Dir["test/*"].each do |dir|
-   if regexp =~ dir
-      next unless subdirs.include?("src/conversions/#{$1}")
-   end
-   make.puts "\t-(cd #{dir} ; RUBY='#{RbConfig.ruby}' sh ./runtest #{suffix})"
-end
+
+make.puts "\t(cd test ; RUBY='#{RbConfig.ruby}' sh ./testsuite #{suffix})"
 
 make.close
 
