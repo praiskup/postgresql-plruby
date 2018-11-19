@@ -1,0 +1,14 @@
+sudo: true
+language: ruby
+
+before_script:
+    - .travis/install-postgres.sh
+    - export PATH=$PATH:/usr/lib/postgresql/"$PG_VERSION"/bin
+
+script:
+    - .travis/run.sh
+
+matrix:
+  include:
+    - env:
+        - PG_VERSION=10

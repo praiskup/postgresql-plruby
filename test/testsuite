@@ -1,0 +1,45 @@
+#! /bin/sh
+
+working_directory=`dirname "$0"`
+cd "$working_directory"
+
+DEFAULT_TESTS='
+    conv_bitstring
+    conv_geometry
+    conv_network
+    plp
+    plt
+    range
+'
+
+DBNAME=plruby_test
+
+SUFFIX=$1
+
+execute_test ()
+(
+    cd "$1"
+    dropdb "$DBNAME"
+    createdb "$DBNAME"
+    "${RUBY-ruby}" ../fixup-test-dir.rb "$SUFFIX"
+    psql -q -n -X "$DBNAME" < test_mklang.sql
+    test -f test_setup.sql && psql -q -n -X $DBNAME < test_setup.sql
+    psql -q -n -X -e "$DBNAME" < test_queries.sql > test.out 2>&1
+    cmp -s test.expected test.out
+)
+
+: ${TESTS=$DEFAULT_TESTS}
+
+exit_status=0
+for t in $TESTS; do
+    echo "Testing: $t"
+    if execute_test "$t"; then
+        echo "                  [ OK ]"
+    else
+        echo "                  [ FAIL ]"
+        exit_status=1
+    fi
+done
+
+test $exit_status -ne 0 && echo "see 'diff test.expected test.out' for failed tests"
+exit $exit_status
