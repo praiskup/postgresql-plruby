@@ -1,5 +1,8 @@
 #! /bin/sh
 
+working_directory=`dirname "$0"`
+cd "$working_directory"
+
 DEFAULT_TETS='
     conv_bitstring
     conv_geometry
