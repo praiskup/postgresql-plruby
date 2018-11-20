@@ -1335,7 +1335,11 @@ pl_trigger_handler(struct pl_thread_st *plth)
         mgr->modattrs = modattrs;
         mgr->modvalues = modvalues;
         mgr->modnulls = modnulls;
+#if HAVE_RB_BLOCK_CALL
+        rb_block_call(c, rb_intern("each"), 0, 0, for_numvals, res);
+#else
         rb_iterate(rb_each, c, for_numvals, res);
+#endif
     }
 
     PLRUBY_BEGIN_PROTECT(1);

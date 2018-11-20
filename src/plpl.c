@@ -843,7 +843,11 @@ pl_SPI_exec(argc, argv, obj)
     array = comp = RET_HASH;
     if (argc && TYPE(argv[argc - 1]) == T_HASH) {
         MEMZERO(&po, struct portal_options, 1);
+#if HAVE_RB_BLOCK_CALL
+	rb_block_call(argv[argc - 1], rb_intern("each"), 0, 0, plruby_i_each, (VALUE)&po);
+#else
         rb_iterate(rb_each, argv[argc - 1], plruby_i_each, (VALUE)&po);
+#endif
         comp = po.output;
         count = po.count;
         argc--;

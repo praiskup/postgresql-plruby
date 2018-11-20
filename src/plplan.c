@@ -78,7 +78,11 @@ pl_plan_init(int argc, VALUE *argv, VALUE obj)
     
     Data_Get_Struct(obj, pl_query_desc, qdesc);
     if (argc && TYPE(argv[argc - 1]) == T_HASH) {
+#if HAVE_RB_BLOCK_CALL
+	rb_block_call(argv[argc - 1], rb_intern("each"), 0, 0, plruby_i_each, (VALUE)&(qdesc->po));
+#else
         rb_iterate(rb_each, argv[argc - 1], plruby_i_each, (VALUE)&(qdesc->po));
+#endif
         argc--;
     }
     switch (rb_scan_args(argc, argv, "13", &a, &b, &c, &d)) {
@@ -410,7 +414,11 @@ create_vortal(int argc, VALUE *argv, VALUE obj)
         portal->po.output = RET_HASH;
     }
     if (argc && TYPE(argv[argc - 1]) == T_HASH) {
+#if HAVE_RB_BLOCK_CALL
+	rb_block_call(argv[argc - 1], rb_intern("each"), 0, 0, plruby_i_each, (VALUE)&portal->po);
+#else
         rb_iterate(rb_each, argv[argc - 1], plruby_i_each, (VALUE)&portal->po);
+#endif
         argc--;
     }
     switch (rb_scan_args(argc, argv, "03", &argsv, &countv, &c)) {
