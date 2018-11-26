@@ -115,19 +115,10 @@ if ! have_header("catalog/pg_proc.h")
 end
 
 case version_str = `#{pg_config} --version`.strip
-when /^PostgreSQL (\d+).(\d+)/
-   if $1.to_i < 10
-       version = 10 * $1.to_i + $2.to_i
-   else
-       # In v10+, the second number means "minor" version - which is
-       # expected to be >= 10 one day.  So rather mutiply by 100 to avoid
-       # overflow.
-       version = 100 * $1.to_i + $2.to_i
-   end
-else
-   version = 0
+when /^PostgreSQL (\d+(:?\.\d+)?(:?\.\d+)?)/
+   version = $1.split('.').map(&:to_i)
 end
-if version < 92
+if !version || (version <=> [9, 2]) < 0
    raise <<-EOT
 
 ============================================================
