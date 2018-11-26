@@ -121,9 +121,11 @@ end
 if !version || (version <=> [9, 2]) < 0
    raise <<-EOT
 
-============================================================
-#{version_str} is not supported.  Try plruby-0.5.7 or older.
-============================================================
+ ==============================================================
+ #{version_str} is not supported.
+
+ Minimum supported version is 9.2.  Try plruby-0.5.7 or older.
+ ==============================================================
    EOT
 end
 
